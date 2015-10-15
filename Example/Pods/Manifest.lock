@@ -1,0 +1,14 @@
+PODS:
+  - ZSWRoundedImage (1.0)
+
+DEPENDENCIES:
+  - ZSWRoundedImage (from `../`)
+
+EXTERNAL SOURCES:
+  ZSWRoundedImage:
+    :path: ../
+
+SPEC CHECKSUMS:
+  ZSWRoundedImage: a638426e4d4013cf312346b86bb938ac421fbc6f
+
+COCOAPODS: 0.39.0

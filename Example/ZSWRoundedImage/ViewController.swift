@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import ZSWRoundedImage
 
 class ViewController: UIViewController {
 
+    @IBOutlet weak var imageView: UIImageView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        let image = UIImage.imageWithRoundedCorners(.AllCorners, cornerRadius: 5.0, resizingDirection: .Both, foregroundColor: UIColor.orangeColor(), backgroundColor: UIColor.blackColor())
+        imageView.image = image
     }
 
     override func didReceiveMemoryWarning() {

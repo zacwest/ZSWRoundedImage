@@ -1,0 +1,6 @@
+framework module ZSWRoundedImage {
+  umbrella header "ZSWRoundedImage-umbrella.h"
+
+  export *
+  module * { export * }
+}
