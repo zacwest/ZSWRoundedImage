@@ -10,20 +10,17 @@ import UIKit
 import ZSWRoundedImage
 
 class ViewController: UIViewController {
-
-    @IBOutlet weak var imageView: UIImageView!
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    @IBOutlet weak var simpleRounded: UIImageView!
+    @IBOutlet weak var pill: UIImageView!
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        let image = UIImage.imageWithRoundedCorners(.AllCorners, cornerRadius: 5.0, resizingDirection: .Both, foregroundColor: UIColor.orangeColor(), backgroundColor: UIColor.blackColor())
-        imageView.image = image
+        // For normal rounded rectangles, resize both directions
+        simpleRounded.image = UIImage.imageWithRoundedCorners(.AllCorners, cornerRadius: 10.0, resizingDirection: .Both, foregroundColor: UIColor.blackColor(), backgroundColor: UIColor.clearColor())
+        
+        // For pill-like images, only resize horizontally so there's no tile pixel
+        pill.image = UIImage.imageWithRoundedCorners(.AllCorners, cornerRadius: pill.bounds.height/2.0, resizingDirection: .Horizontal, foregroundColor: UIColor.blackColor(), backgroundColor: UIColor.clearColor())
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
 }
 
