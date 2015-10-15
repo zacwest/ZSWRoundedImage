@@ -1,10 +1,11 @@
 Pod::Spec.new do |s|
   s.name             = "ZSWRoundedImage"
   s.version          = "1.0"
-  s.summary          = "A short description of ZSWRoundedImage."
+  s.summary          = "Creates rounded-rectangle UIImages."
   s.description      = <<-DESC
+                       This extension to UIImage creates images with any of the corners
+                       rounded, optionally with a border and color.
                        DESC
-
   s.homepage         = "https://github.com/zacwest/ZSWRoundedImage"
   s.license          = 'MIT'
   s.author           = { "Zachary West" => "zacwest@gmail.com" }
