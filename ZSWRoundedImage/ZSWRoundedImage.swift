@@ -11,7 +11,7 @@ public struct RoundedResizingDirection : OptionSetType {
     public static let Both: RoundedResizingDirection = [Horizontal, Vertical]
 }
 
-internal extension UIColor {
+extension UIColor {
     var isTranslucent: Bool {
         var alpha: CGFloat = 0
         if self.getRed(nil, green: nil, blue: nil, alpha: &alpha) {
@@ -25,32 +25,28 @@ internal extension UIColor {
 extension UIImage {
     // this is not an initializer because we need to replace self with resizable version
     // and the language does not allow this
-    public static func imageWithRoundedCorners(roundedCorners: UIRectCorner, var cornerRadius: Double, resizingDirection: RoundedResizingDirection, foregroundColor: UIColor, backgroundColor: UIColor, borderColor: UIColor? = nil, var borderWidth: Double? = nil) -> UIImage {
+    public static func imageWithRoundedCorners(roundedCorners: UIRectCorner, cornerRadius: CGFloat, resizingDirection: RoundedResizingDirection, foregroundColor: UIColor, backgroundColor: UIColor, borderColor: UIColor? = nil, borderWidth: CGFloat? = nil) -> UIImage {
         // We adjust all our values to be in 1.0-scale space so smaller radii are less aliased
-        let screenScale = Double(UIScreen.mainScreen().scale)
-        cornerRadius *= Double(screenScale)
-        if borderWidth != nil {
-            borderWidth = borderWidth! * screenScale
-        }
-        
-        var size = CGSize(width: cornerRadius*2.0*screenScale, height: cornerRadius*2.0*screenScale)
+        let screenScale = UIScreen.mainScreen().scale
+        let scaledCornerRadius = cornerRadius * screenScale
+        var scaledSize = CGSize(width: scaledCornerRadius*2.0, height: scaledCornerRadius*2.0)
         
         if resizingDirection.contains(.Horizontal) {
-            size.width += CGFloat(screenScale)
+            scaledSize.width += screenScale
         }
         
         if resizingDirection.contains(.Vertical) {
-            size.height += CGFloat(screenScale)
+            scaledSize.height += screenScale
         }
         
         let anyTranslucent = foregroundColor.isTranslucent || backgroundColor.isTranslucent || (borderColor?.isTranslucent ?? false)
-        UIGraphicsBeginImageContextWithOptions(size, !anyTranslucent, 1.0)
+        UIGraphicsBeginImageContextWithOptions(scaledSize, !anyTranslucent, 1.0)
         
         // Fill the whole image with the background color
         backgroundColor.setFill()
-        UIRectFill(CGRect(origin: CGPoint(), size: size))
+        UIRectFill(CGRect(origin: CGPoint(), size: scaledSize))
         
-        let path = UIBezierPath(roundedRectWithoutAliasing: CGRect(origin: CGPoint(), size: size), byRoundingCorners: roundedCorners, cornerRadius: cornerRadius)
+        let path = UIBezierPath(roundedRectWithoutAliasing: CGRect(origin: CGPoint(), size: scaledSize), byRoundingCorners: roundedCorners, cornerRadius: scaledCornerRadius)
         
         foregroundColor.setFill()
         path.fillWithBlendMode(.Copy, alpha: 1.0)
@@ -59,25 +55,25 @@ extension UIImage {
             // border is drawn at twice the size because it draws outside the path half of it
             borderColor?.setStroke()
             path.addClip()
-            path.lineWidth = CGFloat(min(borderWidth, cornerRadius) * 2.0)
+            path.lineWidth = min(borderWidth * screenScale, cornerRadius) * 2.0
             path.strokeWithBlendMode(.Copy, alpha: 1.0)
         }
         
         let rawImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        let image = UIImage(CGImage: rawImage.CGImage!, scale: CGFloat(screenScale), orientation: .Up)
+        let image = UIImage(CGImage: rawImage.CGImage!, scale: screenScale, orientation: .Up)
         
         var capInsets = UIEdgeInsets()
         
         if resizingDirection.contains(.Vertical) {
-            capInsets.top = CGFloat(cornerRadius)
-            capInsets.bottom = CGFloat(cornerRadius)
+            capInsets.top = cornerRadius
+            capInsets.bottom = cornerRadius
         }
         
         if resizingDirection.contains(.Horizontal) {
-            capInsets.left = CGFloat(cornerRadius)
-            capInsets.right = CGFloat(cornerRadius)
+            capInsets.left = cornerRadius
+            capInsets.right = cornerRadius
         }
         
         return image.resizableImageWithCapInsets(capInsets, resizingMode: .Tile)
@@ -90,7 +86,7 @@ extension UIBezierPath {
     // result rather than producing a _good_ result. it's much cleaner to
     // create our own bezier path since we can control how it positions.
     
-    internal convenience init(roundedRectWithoutAliasing frame: CGRect, byRoundingCorners corners: UIRectCorner, cornerRadius: Double) {
+    convenience init(roundedRectWithoutAliasing frame: CGRect, byRoundingCorners corners: UIRectCorner, cornerRadius: CGFloat) {
         let path = CGPathCreateMutable()
         
         func pointsForCorner(corner: UIRectCorner) -> (start: CGPoint, corner: CGPoint, end: CGPoint) {
@@ -133,7 +129,7 @@ extension UIBezierPath {
             }
             
             if corners.contains(corner) && cornerRadius > 0 {
-                CGPathAddArcToPoint(path, nil, cornerPoint.x, cornerPoint.y, endPoint.x, endPoint.y, CGFloat(cornerRadius))
+                CGPathAddArcToPoint(path, nil, cornerPoint.x, cornerPoint.y, endPoint.x, endPoint.y, cornerRadius)
             } else {
                 CGPathAddLineToPoint(path, nil, cornerPoint.x, cornerPoint.y)
                 CGPathAddLineToPoint(path, nil, endPoint.x, endPoint.y)
