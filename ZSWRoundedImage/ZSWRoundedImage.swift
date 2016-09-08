@@ -62,7 +62,7 @@ extension UIImage {
         let rawImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        let image = UIImage(CGImage: rawImage.CGImage!, scale: screenScale, orientation: .Up)
+        let image = UIImage(CGImage: rawImage!.CGImage!, scale: screenScale, orientation: .Up)
         
         var capInsets = UIEdgeInsets()
         
