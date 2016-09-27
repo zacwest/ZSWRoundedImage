@@ -1,6 +1,6 @@
 import UIKit
 
-public struct RoundedResizingDirection : OptionSetType {
+public struct RoundedResizingDirection : OptionSet {
     public let rawValue: Int
     public init(rawValue: Int) {
         self.rawValue = rawValue
@@ -8,7 +8,7 @@ public struct RoundedResizingDirection : OptionSetType {
     
     public static let Horizontal = RoundedResizingDirection(rawValue: 0b1)
     public static let Vertical = RoundedResizingDirection(rawValue: 0b10)
-    public static let Both: RoundedResizingDirection = [Horizontal, Vertical]
+    public static let Both: RoundedResizingDirection = [.Horizontal, .Vertical]
 }
 
 extension UIColor {
@@ -25,9 +25,9 @@ extension UIColor {
 extension UIImage {
     // this is not an initializer because we need to replace self with resizable version
     // and the language does not allow this
-    public static func imageWithRoundedCorners(roundedCorners: UIRectCorner, cornerRadius: CGFloat, resizingDirection: RoundedResizingDirection, foregroundColor: UIColor, backgroundColor: UIColor, borderColor: UIColor? = nil, borderWidth: CGFloat? = nil) -> UIImage {
+    public static func image(withRoundedCorners roundedCorners: UIRectCorner, cornerRadius: CGFloat, resizingDirection: RoundedResizingDirection, foregroundColor: UIColor, backgroundColor: UIColor, borderColor: UIColor? = nil, borderWidth: CGFloat? = nil) -> UIImage {
         // We adjust all our values to be in 1.0-scale space so smaller radii are less aliased
-        let screenScale = UIScreen.mainScreen().scale
+        let screenScale = UIScreen.main.scale
         let scaledCornerRadius = cornerRadius * screenScale
         var scaledSize = CGSize(width: scaledCornerRadius*2.0, height: scaledCornerRadius*2.0)
         
@@ -49,20 +49,20 @@ extension UIImage {
         let path = UIBezierPath(roundedRectWithoutAliasing: CGRect(origin: CGPoint(), size: scaledSize), byRoundingCorners: roundedCorners, cornerRadius: scaledCornerRadius)
         
         foregroundColor.setFill()
-        path.fillWithBlendMode(.Copy, alpha: 1.0)
+        path.fill(with: .copy, alpha: 1.0)
         
         if let borderWidth = borderWidth {
             // border is drawn at twice the size because it draws outside the path half of it
             borderColor?.setStroke()
             path.addClip()
             path.lineWidth = min(borderWidth * screenScale, cornerRadius) * 2.0
-            path.strokeWithBlendMode(.Copy, alpha: 1.0)
+            path.stroke(with: .copy, alpha: 1.0)
         }
         
         let rawImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
-        let image = UIImage(CGImage: rawImage.CGImage!, scale: screenScale, orientation: .Up)
+        let image = UIImage(cgImage: rawImage!.cgImage!, scale: screenScale, orientation: .up)
         
         var capInsets = UIEdgeInsets()
         
@@ -76,40 +76,40 @@ extension UIImage {
             capInsets.right = cornerRadius
         }
         
-        return image.resizableImageWithCapInsets(capInsets, resizingMode: .Tile)
+        return image.resizableImage(withCapInsets: capInsets, resizingMode: .tile)
     }
 }
 
 extension UIBezierPath {
-    // UIBezierPath's built-in roundedRect generator produces rectangles which 
+    // UIBezierPath's built-in roundedRect generator produces rectangles which
     // are badly antialiased; it seems like it's trying too hard to produce _a_
     // result rather than producing a _good_ result. it's much cleaner to
     // create our own bezier path since we can control how it positions.
     
     convenience init(roundedRectWithoutAliasing frame: CGRect, byRoundingCorners corners: UIRectCorner, cornerRadius: CGFloat) {
-        let path = CGPathCreateMutable()
+        let path = CGMutablePath()
         
-        func pointsForCorner(corner: UIRectCorner) -> (start: CGPoint, corner: CGPoint, end: CGPoint) {
+        func pointsForCorner(_ corner: UIRectCorner) -> (start: CGPoint, corner: CGPoint, end: CGPoint) {
             switch corner {
-            case UIRectCorner.TopLeft:
+            case UIRectCorner.topLeft:
                 return (
                     start: CGPoint(x: frame.minX, y: frame.midY),
                     corner: CGPoint(x: frame.minX, y: frame.minY),
                     end: CGPoint(x: frame.midX, y: frame.minY)
                 )
-            case UIRectCorner.TopRight:
+            case UIRectCorner.topRight:
                 return (
                     start: CGPoint(x: frame.midX, y: frame.minY),
                     corner: CGPoint(x: frame.maxX, y: frame.minY),
                     end: CGPoint(x: frame.maxX, y: frame.midY)
                 )
-            case UIRectCorner.BottomRight:
+            case UIRectCorner.bottomRight:
                 return (
                     start: CGPoint(x: frame.maxX, y: frame.midY),
                     corner: CGPoint(x: frame.maxX, y: frame.maxY),
                     end: CGPoint(x: frame.midX, y: frame.maxY)
                 )
-            case UIRectCorner.BottomLeft:
+            case UIRectCorner.bottomLeft:
                 return (
                     start: CGPoint(x: frame.midX, y: frame.maxY),
                     corner: CGPoint(x: frame.minX, y: frame.maxY),
@@ -122,22 +122,22 @@ extension UIBezierPath {
             return (CGPoint(), CGPoint(), CGPoint())
         }
         
-        for corner in [.TopLeft, .TopRight, .BottomRight, .BottomLeft] as [UIRectCorner] {
+        for corner in [.topLeft, .topRight, .bottomRight, .bottomLeft] as [UIRectCorner] {
             let (startPoint, cornerPoint, endPoint) = pointsForCorner(corner)
-            if CGPathIsEmpty(path) {
-                CGPathMoveToPoint(path, nil, startPoint.x, startPoint.y)
+            if path.isEmpty {
+                path.move(to: startPoint)
             }
             
             if corners.contains(corner) && cornerRadius > 0 {
-                CGPathAddArcToPoint(path, nil, cornerPoint.x, cornerPoint.y, endPoint.x, endPoint.y, cornerRadius)
+                path.addArc(tangent1End: cornerPoint, tangent2End: endPoint, radius: cornerRadius)
             } else {
-                CGPathAddLineToPoint(path, nil, cornerPoint.x, cornerPoint.y)
-                CGPathAddLineToPoint(path, nil, endPoint.x, endPoint.y)
+                path.addLine(to: cornerPoint)
+                path.addLine(to: endPoint)
             }
         }
         
-        CGPathCloseSubpath(path)
+        path.closeSubpath()
         
-        self.init(CGPath: path)
+        self.init(cgPath: path)
     }
 }
