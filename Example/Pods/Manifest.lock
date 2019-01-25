@@ -1,14 +1,16 @@
 PODS:
-  - ZSWRoundedImage (1.0)
+  - ZSWRoundedImage (1.1)
 
 DEPENDENCIES:
   - ZSWRoundedImage (from `../`)
 
 EXTERNAL SOURCES:
   ZSWRoundedImage:
-    :path: ../
+    :path: "../"
 
 SPEC CHECKSUMS:
-  ZSWRoundedImage: a638426e4d4013cf312346b86bb938ac421fbc6f
+  ZSWRoundedImage: eea47547c36e3eb3e9b7f62fcc32bcce5b54df28
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: a8386b95c93219557ff1cd091c99403477b642e1
+
+COCOAPODS: 1.5.3
