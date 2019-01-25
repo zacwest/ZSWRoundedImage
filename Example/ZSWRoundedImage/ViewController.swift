@@ -17,10 +17,10 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
         
         // For normal rounded rectangles, resize both directions
-        simpleRounded.image = UIImage.imageWithRoundedCorners(roundedCorners: .allCorners, cornerRadius: 10.0, resizingDirection: .both, foregroundColor: .black, backgroundColor: .clear)
+        simpleRounded.image = UIImage.image(roundedCorners: .allCorners, cornerRadius: 10.0, resizingDirection: .both, foregroundColor: .black, backgroundColor: .clear)
         
         // For pill-like images, only resize horizontally so there's no tile pixel
-        pill.image = UIImage.imageWithRoundedCorners(roundedCorners: .allCorners, cornerRadius: pill.bounds.height/2.0, resizingDirection: .horizontal, foregroundColor: .black, backgroundColor: .clear)
+        pill.image = UIImage.image(roundedCorners: .allCorners, cornerRadius: pill.bounds.height/2.0, resizingDirection: .horizontal, foregroundColor: .black, backgroundColor: .clear)
     }
 }
 
