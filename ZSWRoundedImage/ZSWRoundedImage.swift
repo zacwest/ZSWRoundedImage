@@ -24,7 +24,7 @@ extension UIColor {
 
 extension UIImage {
     // this is not an initializer because we need to replace self with resizable version
-    // and the language does not allow this
+    // resizing can only be set with the -resizableImage method https://developer.apple.com/documentation/uikit/uiimage/1624157-resizingmode
     public static func imageWithRoundedCorners(roundedCorners: UIRectCorner, cornerRadius: CGFloat, resizingDirection: RoundedResizingDirection, foregroundColor: UIColor, backgroundColor: UIColor, borderColor: UIColor? = nil, borderWidth: CGFloat? = nil) -> UIImage {
         // We adjust all our values to be in 1.0-scale space so smaller radii are less aliased
         let screenScale = UIScreen.main.scale
