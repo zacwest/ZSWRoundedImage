@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "ZSWRoundedImage"
-  s.version          = "1.0"
+  s.version          = "1.1"
   s.summary          = "Creates rounded-rectangle UIImages."
   s.description      = <<-DESC
                        This extension to UIImage creates images with any of the corners

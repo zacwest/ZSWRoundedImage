@@ -36,20 +36,20 @@ and set the image in a `UIImageView`:
 
 ```
 imageView.image = UIImage.imageWithRoundedCorners(
-    .AllCorners, cornerRadius: 10.0,
-    resizingDirection: .Both,
-    foregroundColor: UIColor.blackColor(),
-    backgroundColor: UIColor.clearColor()
+    .allCorners, cornerRadius: 10.0,
+    resizingDirection: .both,
+    foregroundColor: UIColor.black,
+    backgroundColor: UIColor.clear
 )
 ```
 
 ## Resizing direction
 
-A common design requirement is a background that looks like a pill. You create this by specifying a `cornerRadius` equal to half the height of your display. By default, this library adds a tiling pixel so the image can resize in any direction; this tiling pixel throws off the clean circular look of the pill. To eliminate this tiling pixel, pass either `.Horizontal` or `.Vertical` for the resizing direction, and it will not include one.
+A common design requirement is a background that looks like a pill. You create this by specifying a `cornerRadius` equal to half the height of your display. By default, this library adds a tiling pixel so the image can resize in any direction; this tiling pixel throws off the clean circular look of the pill. To eliminate this tiling pixel, pass either `.horizontal` or `.vertical` for the resizing direction, and it will not include one.
 
 ## Why isn't this a UIImage init method?
 
-Good question, curious explorer! This is not an init method because creating a resizable `UIImage` requires a combination of initialization and copying-again-with-arguments. Swift init methods cannot change the return value or assign to self, so as of at least Swift 2.0 this is not possible. This was filed as [23128341](http://www.openradar.me/radar?id=5053670215385088).
+Good question, curious explorer! This is not an init method because creating a resizable `UIImage` requires a combination of initialization and copying-again-with-arguments. Swift init methods cannot change the return value or assign to self. This was filed as [23128341](http://www.openradar.me/radar?id=5053670215385088).
 
 ## Why are you creating your own `UIBezierPath`?
 
@@ -61,7 +61,7 @@ ZSWRoundedImage is available through [CocoaPods](http://cocoapods.org). To insta
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod "ZSWRoundedImage", "~> 1.0"
+pod "ZSWRoundedImage", "~> 1.1"
 ```
 
 ## License

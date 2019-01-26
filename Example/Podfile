@@ -1,6 +1,6 @@
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
-target 'ZSWRoundedImage_Example', :exclusive => true do
+target 'ZSWRoundedImage_Example' do
   pod "ZSWRoundedImage", :path => "../"
 end
