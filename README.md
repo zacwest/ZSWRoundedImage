@@ -14,7 +14,7 @@ This adds a single public method to UIImage:
 
 ```swift
 extension UIImage {
-    public static func imageWithRoundedCorners(
+    public static func image(
         roundedCorners: UIRectCorner,
         cornerRadius: CGFloat,
         resizingDirection: RoundedResizingDirection,
@@ -35,8 +35,9 @@ import ZSWRoundedImage
 and set the image in a `UIImageView`:
 
 ```
-imageView.image = UIImage.imageWithRoundedCorners(
-    .allCorners, cornerRadius: 10.0,
+imageView.image = UIImage.image(
+    roundedCorners: .allCorners, 
+    cornerRadius: 10.0,
     resizingDirection: .both,
     foregroundColor: UIColor.black,
     backgroundColor: UIColor.clear
