@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
   s.author           = { "Zachary West" => "zacwest@gmail.com" }
   s.source           = { :git => "https://github.com/zacwest/ZSWRoundedImage.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/zacwest'
+  s.swift_version 	 = '4.2'
 
   s.platform     = :ios, '8.0'
   s.requires_arc = true
